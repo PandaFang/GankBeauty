@@ -1,6 +1,7 @@
 package com.github.pandafang.gankbeauty.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -9,6 +10,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.github.pandafang.gankbeauty.ImageActivity;
 import com.github.pandafang.gankbeauty.R;
 import com.github.pandafang.gankbeauty.model.Girl;
 
@@ -68,7 +71,17 @@ public class GankAdapter extends RecyclerView.Adapter<GankAdapter.ImageViewHolde
     public ImageViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
         View view =  mLayoutInflater.inflate(R.layout.item_layout, parent, false);
-        return new ImageViewHolder(view);
+        final ImageViewHolder holder = new ImageViewHolder(view);
+        holder.iv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String url = (String)v.getTag(R.id.recycler_item);
+                Intent intent = new Intent(mContext, ImageActivity.class);
+                intent.putExtra(ImageActivity.EXTRA_URL, url);
+                mContext.startActivity(intent);
+            }
+        });
+        return holder;
 
     }
 
@@ -77,10 +90,16 @@ public class GankAdapter extends RecyclerView.Adapter<GankAdapter.ImageViewHolde
 
 //            Log.i(TAG, "onBindViewHolder: postion" + position);
 
-        Glide.with(mContext).load(mDatas.get(position).getUrl()).placeholder(R.drawable.image_loading)
+        String url = mDatas.get(position).getUrl();
+        holder.iv.setTag(R.id.recycler_item, url);
+
+
+        Glide.with(mContext).load(url).diskCacheStrategy(DiskCacheStrategy.ALL)
+                .placeholder(R.drawable.image_loading)
                 .centerCrop()
-                .thumbnail(0.2f)
+                .thumbnail(0.1f)
                 .into(holder.iv);
+
 
 
 
