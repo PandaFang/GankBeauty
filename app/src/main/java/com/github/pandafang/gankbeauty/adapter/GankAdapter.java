@@ -2,6 +2,8 @@ package com.github.pandafang.gankbeauty.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.AnimationDrawable;
+import android.os.Build;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -94,8 +96,13 @@ public class GankAdapter extends RecyclerView.Adapter<GankAdapter.ImageViewHolde
         holder.iv.setTag(R.id.recycler_item, url);
 
 
+        AnimationDrawable loading;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+            loading=(AnimationDrawable)mContext.getDrawable(R.drawable.image_loading);
+        else
+            loading=(AnimationDrawable)mContext.getResources().getDrawable(R.drawable.image_loading);
         Glide.with(mContext).load(url).diskCacheStrategy(DiskCacheStrategy.ALL)
-                .placeholder(R.drawable.image_loading)
+                .placeholder(loading)
                 .centerCrop()
                 .thumbnail(0.1f)
                 .into(holder.iv);

@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.drawable.AnimationDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -62,7 +63,7 @@ public class ImageActivity extends AppCompatActivity {
 
          loadImage(url);
 
-        // 这种方式保存的图片不是原图会变大
+         // 这种方式保存的图片不是原图，md5 变化了， 而且图的存储体积会变大
 //        downBitmap(url);
 
 
@@ -80,7 +81,14 @@ public class ImageActivity extends AppCompatActivity {
 
 
     public void loadImage(String url) {
-        Glide.with(this).load(url).placeholder(R.drawable.image_loading)
+        // 解决placeholder 旋转loading提示不转动的问题
+        // 参考：https://stackoverflow.com/questions/39055259/how-to-load-gif-image-in-placeholder-of-glide-picasso-ion-etc
+        AnimationDrawable loading;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+            loading=(AnimationDrawable)this.getDrawable(R.drawable.image_loading);
+        else
+            loading=(AnimationDrawable)this.getResources().getDrawable(R.drawable.image_loading);
+        Glide.with(this).load(url).placeholder(loading)
                 .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                 .listener(new RequestListener<String, GlideDrawable>() {
                     @Override
@@ -222,9 +230,18 @@ public class ImageActivity extends AppCompatActivity {
 
 
 
-
+    /**
+     * 这种方式保存的图片不是原图，md5 变化了， 而且图的存储体积会变大
+     *
+     */
+    @Deprecated
     public void downBitmap(String url) {
-        Glide.with(this).load(url).asBitmap().placeholder(R.drawable.image_loading)
+        AnimationDrawable loading;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+            loading=(AnimationDrawable)this.getDrawable(R.drawable.image_loading);
+        else
+            loading=(AnimationDrawable)this.getResources().getDrawable(R.drawable.image_loading);
+        Glide.with(this).load(url).asBitmap().placeholder(loading)
                 .listener(new RequestListener<String, Bitmap>() {
                     @Override
                     public boolean onException(Exception e, String model, Target<Bitmap> target, boolean isFirstResource) {
@@ -248,6 +265,11 @@ public class ImageActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * 这种方式保存的图片不是原图，md5 变化了， 而且图的存储体积会变大
+     *
+     */
+    @Deprecated
     public void saveImage() {
 
         if (!isReady)
