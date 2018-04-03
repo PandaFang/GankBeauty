@@ -101,6 +101,7 @@ public class GankAdapter extends RecyclerView.Adapter<GankAdapter.ImageViewHolde
             loading=(AnimationDrawable)mContext.getDrawable(R.drawable.image_loading);
         else
             loading=(AnimationDrawable)mContext.getResources().getDrawable(R.drawable.image_loading);
+        loading.start();
         Glide.with(mContext).load(url).diskCacheStrategy(DiskCacheStrategy.ALL)
                 .placeholder(loading)
                 .centerCrop()

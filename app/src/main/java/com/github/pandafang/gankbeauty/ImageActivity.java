@@ -88,6 +88,7 @@ public class ImageActivity extends AppCompatActivity {
             loading=(AnimationDrawable)this.getDrawable(R.drawable.image_loading);
         else
             loading=(AnimationDrawable)this.getResources().getDrawable(R.drawable.image_loading);
+        loading.start();
         Glide.with(this).load(url).placeholder(loading)
                 .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                 .listener(new RequestListener<String, GlideDrawable>() {
